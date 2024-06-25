@@ -1,9 +1,9 @@
-name: 'Build Docker Image'
+name: 'Build and Upload Docker Image'
 
 on:
-  pull_request:
+  push:
     branches:
-      - '*'
+      - main
 
 jobs:
   build-image:
