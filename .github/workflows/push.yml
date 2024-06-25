@@ -1,0 +1,21 @@
+name: 'Build and Upload Docker Image'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+      - name: 'Build Image'
+        run: docker build -t ghcr.io/mystarinyourskycloud/docker:latest .
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: MyStarInYourSkyCloud-Bot
+          password: ${{ secrets.GH_TOKEN }}
