@@ -1,0 +1,12 @@
+{
+    "settings": {
+        "primaryPort": {{ environ('ZEROTIER_SETTING_PRIMARYPORT') }},
+        "portMappingEnabled": {{ environ('ZEROTIER_SETTING_PORTMAPPINGENABLED') }},
+        "softwareUpdate": "{{ environ('ZEROTIER_SETTING_SOFTWAREUPDATE') }}",
+        "softwareUpdateChannel": "{{ environ('ZEROTIER_SETTING_SOFTWAREUPDATECHANNEL') }}",
+        "softwareUpdateDist": {{ environ('ZEROTIER_SETTING_SOFTWAREUPDATEDIST') }},
+        "interfacePrefixBlacklist": {%- if (environ('ZEROTIER_SETTING_INTERFACEPREFIXBLACKLIST'))|length > 0 -%}{{ " " + (environ('ZEROTIER_SETTING_INTERFACEPREFIXBLACKLIST')).split(',') }}{%- else -%}{{ " []" }}{%- endif -%},
+        "allowManagementFrom": {%- if (environ('ZEROTIER_SETTING_ALLOWMANAGEMENTFROM'))|length > 0 -%}{{ " " + (environ('ZEROTIER_SETTING_ALLOWMANAGEMENTFROM')).split(',') }}{%- else -%}{{ " null" }}{%- endif -%},
+        "allowTcpFallbackRelay": {{ environ('ZEROTIER_SETTING_ALLOWTCPFALLBACKRELAY') }}
+    }
+}
