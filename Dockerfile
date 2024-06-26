@@ -11,6 +11,8 @@ ENV ZEROTIER_SETTING_INTERFACEPREFIXBLACKLIST=""
 ENV ZEROTIER_SETTING_ALLOWMANAGEMENTFROM=""
 ENV ZEROTIER_SETTING_ALLOWTCPFALLBACKRELAY=true
 
+LABEL org.opencontainers.image.source https://github.com/MyStarInYourSkyCloud/docker-zerotier
+
 RUN apt-get update \
     && apt-get -y --no-install-recommends install curl gnupg2 ca-certificates jq python3-dev python3-pip \
     && pip3 install --break-system-packages jinja2-cli \
