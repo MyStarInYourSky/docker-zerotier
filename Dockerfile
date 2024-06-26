@@ -8,14 +8,17 @@ ENV ZEROTIER_SETTING_SOFTWAREUPDATE=disable
 ENV ZEROTIER_SETTING_SOFTWAREUPDATECHANNEL=release
 ENV ZEROTIER_SETTING_SOFTWAREUPDATEDIST=false
 ENV ZEROTIER_SETTING_INTERFACEPREFIXBLACKLIST=""
-ENV ZEROTIER_SETTING_ALLOWMANAGEMENTFROM=""
+ENV ZEROTIER_SETTING_ALLOWMANAGEMENTFROM="127.0.0.1"
 ENV ZEROTIER_SETTING_ALLOWTCPFALLBACKRELAY=true
 
 LABEL org.opencontainers.image.source https://github.com/MyStarInYourSkyCloud/docker-zerotier
 
+ADD pip.conf /etc/pip.conf
+ADD local.conf.tmpl /docker/local.conf.j2
+ADD entrypoint.sh /docker/entrypoint.sh
+
 RUN apt-get update \
-    && apt-get -y --no-install-recommends install curl gnupg2 ca-certificates jq python3-dev python3-pip \
-    && pip3 install --break-system-packages jinja2-cli \
+    && apt -y --no-install-recommends install curl gnupg2 ca-certificates jq gettext-base \
     && echo "deb [signed-by=/etc/apt/keyrings/zerotier.gpg] https://download.zerotier.com/debian/bookworm bookworm main" > /etc/apt/sources.list.d/zerotier.list \
     && mkdir -p /root/.gnupg \
     && chmod 700 /root/.gnupg \
@@ -23,18 +26,18 @@ RUN apt-get update \
     && gpg --no-default-keyring --keyring /tmp/zerotier-apt-keyring.gpg --export --output /etc/apt/keyrings/zerotier.gpg \
     && rm -r /root/.gnupg \
     && apt update \
-    && apt -y install zerotier-one=${ZEROTIER_VERSION} \ 
+    && apt -y --no-install-recommends install zerotier-one=${ZEROTIER_VERSION} \ 
     && service zerotier-one stop \
     && rm -rf /var/lib/zerotier-one/* \
     && chown root:root /var/lib/zerotier-one/ \
-    && rm -rf /var/lib/apt/lists/* 
-
-RUN mkdir /docker
-ADD local.conf.j2 /docker/local.conf.j2
-ADD entrypoint.sh /entrypoint.sh
+    && apt clean autoclean \
+    && apt autoremove --yes \
+    && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
+    && rm /tmp/zerotier-apt-keyring.gpg
 
 VOLUME /var/lib/zerotier-one/
+WORKDIR /var/lib/zerotier-one
 
 HEALTHCHECK CMD /bin/bash -c 'if [[ $(curl -s -H "X-ZT1-Auth: $(cat /var/lib/zerotier-one/authtoken.secret)" http://localhost:${ZEROTIER_SETTING_PRIMARYPORT}/status | jq -r ".online") == "true" ]]; then exit 0; else exit 1; fi'
 
-ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "/docker/entrypoint.sh"]
