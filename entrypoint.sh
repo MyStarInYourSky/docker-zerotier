@@ -32,7 +32,7 @@ mkdir -p /dev/net
 mknod /dev/net/tun c 10 200
 
 # Render Jinja2 Local Config
-jinja2 /docker/local.conf.j2 > /var/lib/zerotier-one/local.conf
+/docker/venv/bin/jinja2 /docker/local.conf.j2 > /var/lib/zerotier-one/local.conf
 
 # Start App
 zerotier-one -U -p${ZEROTIER_SETTING_PRIMARYPORT}
