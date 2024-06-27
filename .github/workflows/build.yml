@@ -12,4 +12,4 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v4
       - name: 'Build Image'
-        run: docker build -t ghcr.io/mystarinyourskycloud/docker:latest .
+        run: docker build -t ghcr.io/mystarinyoursky/docker:latest .
