@@ -24,6 +24,7 @@ fi
 # Setup ZeroTier Network
 if [ "$ZEROTIER_NETWORK_ID" != "" ]
 then
+  mkdir -p /var/lib/zerotier-one/networks.d/
   touch "/var/lib/zerotier-one/networks.d/${ZEROTIER_NETWORK_ID}.conf"
 fi
 
