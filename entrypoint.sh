@@ -28,6 +28,12 @@ then
   touch "/var/lib/zerotier-one/networks.d/${ZEROTIER_NETWORK_ID}.conf"
 fi
 
+# Setup ZeroTier Network
+if [ "$ZEROTIER_PLANET" != "" ]
+then
+  echo -n "$ZEROTIER_PLANET" | base64 -d > /var/lib/zerotier-one/planet
+fi
+
 # Create TUN/TAP
 mkdir -p /dev/net
 mknod /dev/net/tun c 10 200
