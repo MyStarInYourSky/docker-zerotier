@@ -12,15 +12,26 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v4
       - name: 'Build Image'
-        run: docker build -t ghcr.io/mystarinyoursky/zerotier:latest .
+        run: docker build -t ghcr.io/mystarinyoursky/zerotier:latest -t -t ${{ secrets.HARBOR_REPO_ADDRESS }}/zerotier/zerotier:latest .
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: MyStarInYourSkyCloud-Bot
           password: ${{ secrets.GH_TOKEN }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.HARBOR_REPO_ADDRESS }}
+          username: ${{ secrets.HARBOR_REPO_USERNAME }}
+          password: ${{ secrets.HARBOR_REPO_SECRET }}  
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
           tags: ghcr.io/mystarinyoursky/zerotier:latest
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ secrets.HARBOR_REPO_ADDRESS }}/zerotier/zerotier:latest
