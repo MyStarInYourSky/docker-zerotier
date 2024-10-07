@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_COLOR: 1
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
     steps:
     - uses: earthly/actions-setup@v1
       with:
