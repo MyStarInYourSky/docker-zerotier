@@ -23,4 +23,4 @@ jobs:
       with:
         fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
     - name: Run Earthly
-      run: earthly --secret gh_token=${{ secrets.GH_TOKEN }} +container-update
+      run: earthly --ci --secret gh_token=${{ secrets.GH_TOKEN }} +container-update
