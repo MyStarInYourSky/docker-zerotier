@@ -1,9 +1,7 @@
-name: Linter
+name: Build and Push to Registry
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:
