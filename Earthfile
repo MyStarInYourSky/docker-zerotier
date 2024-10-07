@@ -55,5 +55,6 @@ release:
     ARG CONTAINER_VER
     FROM earthly/dind:alpine-3.19-docker-25.0.5-r0
     FROM DOCKERFILE --build-arg ZEROTIER_VERSION=$TARGET_VER .
-    SAVE IMAGE ghcr.io/mystarinyoursky/zerotier:$TARGET_VER ghcr.io/mystarinyoursky/zerotier:latest
+    SAVE IMAGE --push ghcr.io/mystarinyoursky/zerotier:$TARGET_VER ghcr.io/mystarinyoursky/zerotier:latest
+    RUN --push docker image push --all-tags ghcr.io/mystarinyoursky/zerotier:latest
     
