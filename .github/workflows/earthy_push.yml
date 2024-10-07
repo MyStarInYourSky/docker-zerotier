@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_COLOR: 1
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
     steps:
     - uses: earthly/actions-setup@v1
       with:
@@ -23,4 +24,4 @@ jobs:
       with:
         fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
     - name: Run Earthly
-      run: earthly --ci --secret gh_token=${{ secrets.GH_TOKEN }} --push +container-update 
+      run: earthly --ci --org MyStarInYourSky --sat docker-zerotier --secret gh_token=${{ secrets.GH_TOKEN }} --push +container-update 
