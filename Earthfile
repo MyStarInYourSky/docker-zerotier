@@ -3,8 +3,8 @@ container-update:
     FROM ubuntu:noble
     ARG gh_token
     RUN apt update && apt -y install jq curl
-    RUN curl -s -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/zerotier/ZeroTierOne/releases | jq -r '.[] | select(.prerelease == false)| select(.draft == false) | .tag_name' | sort -V | tail -1 > /tmp/zerotier_latest_version
-    RUN --secret gh_token=gh_token curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -H "Authorization: Bearer ${gh_token}" https://api.github.com/orgs/MyStarInYourSky/packages/container/zerotier/versions | jq -r '.[].metadata.container.tags.[]| select(. != "latest")' | sort -V  | tail -1 > /tmp/latest_registry_version
+    RUN --no-cache curl -s -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/zerotier/ZeroTierOne/releases | jq -r '.[] | select(.prerelease == false)| select(.draft == false) | .tag_name' | sort -V | tail -1 > /tmp/zerotier_latest_version
+    RUN --no-cache --secret gh_token=gh_token curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -H "Authorization: Bearer ${gh_token}" https://api.github.com/orgs/MyStarInYourSky/packages/container/zerotier/versions | jq -r '.[].metadata.container.tags.[]| select(. != "latest")' | sort -V  | tail -1 > /tmp/latest_registry_version
     ARG ZEROTIER_LATEST_VERSION=$(cat /tmp/zerotier_latest_version)
     ARG LATEST_REGISTRY_VERSION=$(cat /tmp/latest_registry_version)
     FROM python:3
@@ -21,8 +21,8 @@ app-update:
     FROM ubuntu:noble
     ARG gh_token
     RUN apt update && apt -y install jq curl
-    RUN curl -s -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/zerotier/ZeroTierOne/releases | jq -r '.[] | select(.prerelease == false)| select(.draft == false) | .tag_name' | sort -V | tail -1 > /tmp/zerotier_latest_version
-    RUN --secret gh_token=gh_token curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -H "Authorization: Bearer ${gh_token}" https://api.github.com/orgs/MyStarInYourSky/packages/container/zerotier/versions | jq -r '.[].metadata.container.tags.[]| select(. != "latest")' | sort -V  | tail -1 > /tmp/latest_registry_version
+    RUN --no-cache curl -s -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/zerotier/ZeroTierOne/releases | jq -r '.[] | select(.prerelease == false)| select(.draft == false) | .tag_name' | sort -V | tail -1 > /tmp/zerotier_latest_version
+    RUN --no-cache --secret gh_token=gh_token curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -H "Authorization: Bearer ${gh_token}" https://api.github.com/orgs/MyStarInYourSky/packages/container/zerotier/versions | jq -r '.[].metadata.container.tags.[]| select(. != "latest")' | sort -V  | tail -1 > /tmp/latest_registry_version
     ARG ZEROTIER_LATEST_VERSION=$(cat /tmp/zerotier_latest_version)
     ARG LATEST_REGISTRY_VERSION=$(cat /tmp/latest_registry_version)
     FROM python:3
