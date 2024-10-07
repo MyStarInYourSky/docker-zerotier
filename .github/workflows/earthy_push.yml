@@ -1,0 +1,30 @@
+name: Linter
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_COLOR: 1
+    steps:
+    - uses: earthly/actions-setup@v1
+      with:
+        version: v0.8.0
+    - name: Log in to the Container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: MyStarInYourSkyCloud-Bot
+        password: ${{ secrets.GH_TOKEN }}
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
+    - name: Run Earthly
+      env:
+        gh_token: ${{ secrets.GH_TOKEN }}
+      run: earthly --secret gh_token=${gh_token}} --push +container-update 
