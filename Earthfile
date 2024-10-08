@@ -54,4 +54,4 @@ release:
     ARG TARGET_VER
     ARG CONTAINER_VER
     FROM DOCKERFILE --build-arg ZEROTIER_VERSION=$TARGET_VER .
-    SAVE IMAGE --push ghcr.io/mystarinyoursky/zerotier:$TARGET_VER ghcr.io/mystarinyoursky/zerotier:latest
+    SAVE IMAGE --push ghcr.io/mystarinyoursky/zerotier:$CONTAINER_VER ghcr.io/mystarinyoursky/zerotier:latest
