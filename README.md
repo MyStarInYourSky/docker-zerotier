@@ -1,5 +1,5 @@
 # docker-zerotier
 
-ZeroTier Container with automatic builds
+ZeroTier Container with automatic updates
 
 Still a WIP.
