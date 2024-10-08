@@ -53,5 +53,5 @@ print(str(Version.parse(target_version).bump_prerelease('')))
 release:
     ARG TARGET_VER
     ARG CONTAINER_VER
-    FROM DOCKERFILE --build-arg ZEROTIER_VERSION=$TARGET_VER .
+    FROM DOCKERFILE --build-arg ZEROTIER_VERSION=$TARGET_VER --build-arg CONTAINER_VERSION=$CONTAINER_VER .
     SAVE IMAGE --push ghcr.io/mystarinyoursky/zerotier:$CONTAINER_VER ghcr.io/mystarinyoursky/zerotier:latest
