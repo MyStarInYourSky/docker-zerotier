@@ -15,7 +15,7 @@ import sys
 target_version = sys.argv[1]
 print(str(Version.parse(target_version).bump_prerelease('')))
     " > ./target_version && chmod +x target_version
-    RUN ./target_version "$ZEROTIER_LATEST_VERSION" > target_version_result
+    RUN ./target_version "$LATEST_REGISTRY_VERSION" > target_version_result
     BUILD +release --CONTAINER_VER=$(cat target_version_result) --TARGET_VER=$ZEROTIER_LATEST_VERSION
 app-update:
     FROM ubuntu:noble
