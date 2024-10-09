@@ -39,11 +39,22 @@ mkdir -p /dev/net
 mknod /dev/net/tun c 10 200
 
 # Build Management Subnets
-export ZEROTIER_SETTING_INTERFACEPREFIXBLACKLIST=$(echo \"${ZEROTIER_SETTING_INTERFACEPREFIXBLACKLIST}\" | jq -c 'split(",")')
-export ZEROTIER_SETTING_ALLOWMANAGEMENTFROM=$(echo \"${ZEROTIER_SETTING_ALLOWMANAGEMENTFROM}\" | jq -c 'split(",")')
+export ZEROTIER_LOCAL_SETTING_INTERFACEPREFIXBLACKLIST=$(echo \"${ZEROTIER_LOCAL_SETTING_INTERFACEPREFIXBLACKLIST}\" | jq -c 'split(",")')
+export ZEROTIER_LOCAL_SETTING_ALLOWMANAGEMENTFROM=$(echo \"${ZEROTIER_LOCAL_SETTING_ALLOWMANAGEMENTFROM}\" | jq -c 'split(",")')
 
-# Render Jinja2 Local Config
-envsubst < /docker/local.conf.j2 > /var/lib/zerotier-one/local.conf
+# Build Local Config
+export ZEROTIER_SETTINGS='{}'
+while read line ; do
+  export SETTING_NAME=$(echo -n $line | awk -F'ZEROTIER_LOCAL_SETTING_' '{print $2}'| awk -F'=' '{print $1}')
+  export SETTING_VALUE=$(echo -n $line | awk -F'=' '{print $2}')
+  if [[ $SETTING_VALUE = "true" ]] || [[ $SETTING_VALUE = "false" ]] || [[ $SETTING_VALUE =~ ^[0-9]+$ ]] ; then
+    export ZEROTIER_SETTINGS=$(echo $ZEROTIER_SETTINGS | jq -r -c ". + {\"$SETTING_NAME\": $SETTING_VALUE}")
+  else
+    export ZEROTIER_SETTINGS=$(echo $ZEROTIER_SETTINGS | jq -r -c ". + {\"$SETTING_NAME\": \"$SETTING_VALUE\"}")
+  fi
+done < <(env | grep -i "ZEROTIER_LOCAL_SETTING_")
+export ZEROTIER_LOCAL_CONF=$(echo "{}" | jq -r -c ". + {\"settings\": $ZEROTIER_SETTINGS}")
+echo $ZEROTIER_LOCAL_CONF > /var/lib/zerotier-one/local.conf
 
 # Start App
-zerotier-one -U -p${ZEROTIER_SETTING_PRIMARYPORT}
+zerotier-one -U -p${ZEROTIER_LOCAL_SETTING_PRIMARYPORT:=9993}
