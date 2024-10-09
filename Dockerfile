@@ -14,7 +14,6 @@ ENV ZEROTIER_SETTING_ALLOWTCPFALLBACKRELAY=true
 
 LABEL org.opencontainers.image.source https://github.com/MyStarInYourSkyCloud/docker-zerotier
 
-ADD local.conf.tmpl /docker/local.conf.j2
 ADD entrypoint.sh /docker/entrypoint.sh
 
 RUN apt-get update \
