@@ -14,8 +14,6 @@ ENV ZEROTIER_SETTING_ALLOWTCPFALLBACKRELAY=true
 
 LABEL org.opencontainers.image.source https://github.com/MyStarInYourSkyCloud/docker-zerotier
 
-ADD pip.conf /etc/pip.conf
-ADD local.conf.tmpl /docker/local.conf.j2
 ADD entrypoint.sh /docker/entrypoint.sh
 
 RUN apt-get update \
@@ -39,6 +37,6 @@ RUN apt-get update \
 VOLUME /var/lib/zerotier-one/
 WORKDIR /var/lib/zerotier-one
 
-HEALTHCHECK CMD /bin/bash -c 'if [[ $(curl -s -H "X-ZT1-Auth: $(cat /var/lib/zerotier-one/authtoken.secret)" http://localhost:${ZEROTIER_SETTING_PRIMARYPORT}/status | jq -r ".online") == "true" ]]; then exit 0; else exit 1; fi'
+HEALTHCHECK CMD /bin/bash -c 'if [[ $(curl -s -H "X-ZT1-Auth: $(cat /var/lib/zerotier-one/authtoken.secret)" http://localhost:${ZEROTIER_SETTING_PRIMARYPORT:=9993}/status | jq -r ".online") == "true" ]]; then exit 0; else exit 1; fi'
 
 ENTRYPOINT ["/bin/bash", "/docker/entrypoint.sh"]
