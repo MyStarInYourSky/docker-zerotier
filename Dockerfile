@@ -3,21 +3,15 @@ FROM debian:bookworm-slim
 ARG ZEROTIER_VERSION
 ARG CONTAINER_VERSION
 ENV ZEROTIER_NETWORK_ID=""
-ENV ZEROTIER_SETTING_PRIMARYPORT=9993
-ENV ZEROTIER_SETTING_PORTMAPPINGENABLED=true
-ENV ZEROTIER_SETTING_SOFTWAREUPDATE=disable
-ENV ZEROTIER_SETTING_SOFTWAREUPDATECHANNEL=release
-ENV ZEROTIER_SETTING_SOFTWAREUPDATEDIST=false
-ENV ZEROTIER_SETTING_INTERFACEPREFIXBLACKLIST=""
-ENV ZEROTIER_SETTING_ALLOWMANAGEMENTFROM="127.0.0.1"
-ENV ZEROTIER_SETTING_ALLOWTCPFALLBACKRELAY=true
+ENV ZEROTIER_LOCAL_SETTING_primaryPort=9993
 
 LABEL org.opencontainers.image.source https://github.com/MyStarInYourSkyCloud/docker-zerotier
+LABEL org.opencontainers.image.description ZeroTier is a secure network overlay that allows you to manage all of your network resources as if they were on the same LAN.
 
 ADD entrypoint.sh /docker/entrypoint.sh
 
 RUN apt-get update \
-    && apt -y --no-install-recommends install curl gnupg2 ca-certificates jq gettext-base \
+    && apt -y --no-install-recommends install curl gnupg2 ca-certificates jq \
     && echo "deb [signed-by=/etc/apt/keyrings/zerotier.gpg] https://download.zerotier.com/debian/bookworm bookworm main" > /etc/apt/sources.list.d/zerotier.list \
     && mkdir -p /root/.gnupg \
     && chmod 700 /root/.gnupg \
@@ -37,6 +31,6 @@ RUN apt-get update \
 VOLUME /var/lib/zerotier-one/
 WORKDIR /var/lib/zerotier-one
 
-HEALTHCHECK CMD /bin/bash -c 'if [[ $(curl -s -H "X-ZT1-Auth: $(cat /var/lib/zerotier-one/authtoken.secret)" http://localhost:${ZEROTIER_SETTING_PRIMARYPORT:=9993}/status | jq -r ".online") == "true" ]]; then exit 0; else exit 1; fi'
+HEALTHCHECK CMD /bin/bash -c 'if [[ $(curl -s -H "X-ZT1-Auth: $(cat /var/lib/zerotier-one/authtoken.secret)" http://localhost:${ZEROTIER_LOCAL_SETTING_primaryPort}/status | jq -r ".online") == "true" ]]; then exit 0; else exit 1; fi'
 
 ENTRYPOINT ["/bin/bash", "/docker/entrypoint.sh"]
