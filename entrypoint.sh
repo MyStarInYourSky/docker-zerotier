@@ -39,12 +39,12 @@ mkdir -p /dev/net
 mknod /dev/net/tun c 10 200
 
 # Blacklist Interfaces that ZeroTier wont use
-if [ -n $ZEROTIER_LOCAL_SETTING_interfacePrefixBlacklist ]; then
+if [ ! -z $ZEROTIER_LOCAL_SETTING_interfacePrefixBlacklist ]; then
   export ZEROTIER_LOCAL_SETTING_interfacePrefixBlacklist=$(echo \"${ZEROTIER_LOCAL_SETTING_interfacePrefixBlacklist}\" | jq -c 'split(",")')
 fi
 
 # Management subnets
-if [ -n $ZEROTIER_LOCAL_SETTING_allowManagementFrom ]; then
+if [ ! -z $ZEROTIER_LOCAL_SETTING_allowManagementFrom ]; then
   export ZEROTIER_LOCAL_SETTING_allowManagementFrom=$(echo \"${ZEROTIER_LOCAL_SETTING_allowManagementFrom}\" | jq -c 'split(",")')
 fi
 
