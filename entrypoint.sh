@@ -38,9 +38,15 @@ fi
 mkdir -p /dev/net
 mknod /dev/net/tun c 10 200
 
-# Build Management Subnets
-export ZEROTIER_LOCAL_SETTING_INTERFACEPREFIXBLACKLIST=$(echo \"${ZEROTIER_LOCAL_SETTING_INTERFACEPREFIXBLACKLIST}\" | jq -c 'split(",")')
-export ZEROTIER_LOCAL_SETTING_ALLOWMANAGEMENTFROM=$(echo \"${ZEROTIER_LOCAL_SETTING_ALLOWMANAGEMENTFROM}\" | jq -c 'split(",")')
+# Blacklist Interfaces that ZeroTier wont use
+if [ -n $ZEROTIER_LOCAL_SETTING_interfacePrefixBlacklist ]; then
+  export ZEROTIER_LOCAL_SETTING_interfacePrefixBlacklist=$(echo \"${ZEROTIER_LOCAL_SETTING_interfacePrefixBlacklist}\" | jq -c 'split(",")')
+fi
+
+# Management subnets
+if [ -n $ZEROTIER_LOCAL_SETTING_allowManagementFrom ]; then
+  export ZEROTIER_LOCAL_SETTING_allowManagementFrom=$(echo \"${ZEROTIER_LOCAL_SETTING_allowManagementFrom}\" | jq -c 'split(",")')
+fi
 
 # Build Local Config
 export ZEROTIER_SETTINGS='{}'
@@ -57,4 +63,4 @@ export ZEROTIER_LOCAL_CONF=$(echo "{}" | jq -r -c ". + {\"settings\": $ZEROTIER_
 echo $ZEROTIER_LOCAL_CONF > /var/lib/zerotier-one/local.conf
 
 # Start App
-zerotier-one -U -p${ZEROTIER_LOCAL_SETTING_PRIMARYPORT:=9993}
+zerotier-one -U -p${ZEROTIER_LOCAL_SETTING_primaryPort}
