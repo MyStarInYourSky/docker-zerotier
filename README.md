@@ -1,5 +1,5 @@
 # docker-zerotier
 
-Extremely lightweight, configurable ZeroTier docker image.
+ZeroTier Container with automatic updates.
 
 Still a WIP.
