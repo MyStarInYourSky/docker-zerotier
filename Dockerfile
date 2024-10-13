@@ -2,7 +2,6 @@ FROM debian:bookworm-slim
 
 ARG ZEROTIER_VERSION
 ARG CONTAINER_VERSION
-ENV ZEROTIER_NETWORK_ID=""
 ENV ZEROTIER_LOCAL_SETTING_primaryPort=9993
 
 LABEL org.opencontainers.image.source https://github.com/MyStarInYourSkyCloud/docker-zerotier

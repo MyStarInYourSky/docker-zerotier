@@ -1,37 +1,44 @@
 #!/bin/bash
 
-# Set ZeroTier Auth Info
-if [ "$ZEROTIER_NODE_AUTHTOKEN" != "" ]
+# Set ZeroTier Auth Token
+if [ ! -z "$ZEROTIER_NODE_AUTHTOKEN" ]
 then
   echo -n $ZEROTIER_NODE_AUTHTOKEN > /var/lib/zerotier-one/authtoken.secret
   chmod 600 /var/lib/zerotier-one/authtoken.secret
 fi
 
 # Set ZeroTier Public Identity
-if [ "$ZEROTIER_NODE_PUBLICIDENTITY" != "" ]
+if [ ! -z "$ZEROTIER_NODE_PUBLICIDENTITY" ]
 then
   echo -n $ZEROTIER_NODE_PUBLICIDENTITY > /var/lib/zerotier-one/identity.public
   chmod 644 /var/lib/zerotier-one/identity.public
 fi
 
 # Set ZeroTier Secret Identity
-if [ "$ZEROTIER_NODE_SECRETIDENTITY" != "" ]
+if [ ! -z "$ZEROTIER_NODE_SECRETIDENTITY" ]
 then
   echo -n $ZEROTIER_NODE_SECRETIDENTITY > /var/lib/zerotier-one/identity.secret
   chmod 600 /var/lib/zerotier-one/identity.secret
 fi
 
-# Setup ZeroTier Network
-if [ "$ZEROTIER_NETWORK_ID" != "" ]
+# Setup ZeroTier Planet
+if [ ! -z "$ZEROTIER_PLANET" ]
 then
-  mkdir -p /var/lib/zerotier-one/networks.d/
-  touch "/var/lib/zerotier-one/networks.d/${ZEROTIER_NETWORK_ID}.conf"
+  echo -n "$ZEROTIER_PLANET" | base64 -d > /var/lib/zerotier-one/planet
 fi
 
 # Setup ZeroTier Network
-if [ "$ZEROTIER_PLANET" != "" ]
+mkdir -p /var/lib/zerotier-one/networks.d/
+for network in $(find /var/lib/zerotier-one/networks.d/* -regextype egrep -regex '/var/lib/zerotier-one/networks\.d/[0-9a-z]+\.conf' -printf '%f\n'); do
+  rm -f /var/lib/zerotier-one/networks.d/${network}.conf
+  rm -f /var/lib/zerotier-one/networks.d/${network}.local.conf
+done
+if [ ! -z "$ZEROTIER_NETWORK_ID" ]
 then
-  echo -n "$ZEROTIER_PLANET" | base64 -d > /var/lib/zerotier-one/planet
+  for network in $(echo $ZEROTIER_NETWORK_ID | tr ";" "\n")
+  do
+    touch "/var/lib/zerotier-one/networks.d/${network}.conf"
+  done
 fi
 
 # Create TUN/TAP
@@ -61,6 +68,9 @@ while read line ; do
 done < <(env | grep -i "ZEROTIER_LOCAL_SETTING_")
 export ZEROTIER_LOCAL_CONF=$(echo "{}" | jq -r -c ". + {\"settings\": $ZEROTIER_SETTINGS}")
 echo $ZEROTIER_LOCAL_CONF > /var/lib/zerotier-one/local.conf
+
+# Make sure we fix permissions
+chown -R zerotier-one:zerotier-one /var/lib/zerotier-one
 
 # Start App
 zerotier-one -U -p${ZEROTIER_LOCAL_SETTING_primaryPort}
