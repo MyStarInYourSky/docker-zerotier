@@ -15,7 +15,7 @@ import sys
 target_version = sys.argv[1]
 print(str(Version.parse(target_version).bump_prerelease('')))
     " > ./target_version && chmod +x target_version
-    RUN ./target_version "$LATEST_REGISTRY_VERSION" > target_version_result
+    RUN --no-cache ./target_version "$LATEST_REGISTRY_VERSION" > target_version_result
     BUILD +release --CONTAINER_VER=$(cat target_version_result) --TARGET_VER=$ZEROTIER_LATEST_VERSION
 app-update:
     FROM ubuntu:noble
@@ -45,9 +45,9 @@ import sys
 target_version = sys.argv[1]
 print(str(Version.parse(target_version).bump_prerelease('')))
     " > ./target_version && chmod +x target_version
-    RUN ./do_we_build "$ZEROTIER_LATEST_VERSION" "$LATEST_REGISTRY_VERSION" > do_we_build_result
+    RUN --no-cache ./do_we_build "$ZEROTIER_LATEST_VERSION" "$LATEST_REGISTRY_VERSION" > do_we_build_result
     IF [ $(cat do_we_build_result) = "True" ]
-        RUN ./target_version "$ZEROTIER_LATEST_VERSION" > target_version_result
+        RUN --no-cache ./target_version "$LATEST_REGISTRY_VERSION" > target_version_result
         BUILD +release --CONTAINER_VER=$(cat target_version_result) --TARGET_VER=$ZEROTIER_LATEST_VERSION
     END
 release:
