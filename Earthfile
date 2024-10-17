@@ -30,14 +30,11 @@ app-update:
     RUN echo "#!/usr/bin/env python3
 import semver
 import sys
-latest_version = sys.argv[1]
-registry_version = sys.argv[2]
-if registry_version == '':
-    print('True')
-elif semver.compare(latest_version, registry_version) > 0:
-    print('True')
-else:
-    print('False')
+latest_version = semver.Version.parse(sys.argv[1])
+registry_version = semver.Version.parse(sys.argv[2])
+prerelease = registry_version.prerelease
+latest_version_patched = latest_version.replace(prerelease=prerelease)
+print(latest_version_patched>registry_version)
     " > ./do_we_build && chmod +x do_we_build
     RUN echo "#!/usr/bin/env python3
 from semver.version import Version
