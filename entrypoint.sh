@@ -35,7 +35,7 @@ for network in $(find /var/lib/zerotier-one/networks.d/* -regextype egrep -regex
 done
 if [ ! -z "$ZEROTIER_NETWORK_ID" ]
 then
-  for network in $(echo $ZEROTIER_NETWORK_ID | tr ";" "\n")
+  for network in $(echo $ZEROTIER_NETWORK_ID | tr "," "\n")
   do
     touch "/var/lib/zerotier-one/networks.d/${network}.conf"
   done
