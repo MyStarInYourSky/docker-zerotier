@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Install Dependencies
-sudo apt update && apt -y install jq curl
+sudo apt update
+sudo apt -y install jq curl
 sudo pip3 install semver
 
 export LATEST_VERSION=$(curl -s -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/zerotier/ZeroTierOne/releases | jq -r '.[] | select(.prerelease == false)| select(.draft == false) | .tag_name' | sort -V | tail -1)
