@@ -1,4 +1,4 @@
-name: Test Build
+name: Test Pull Request
 
 on:
   pull_request:
@@ -6,10 +6,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       FORCE_COLOR: 1
-      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
     - uses: earthly/actions-setup@v1
       with:
@@ -23,5 +23,5 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
-    - name: Run Earthly
-      run: earthly --ci --org MyStarInYourSky --sat docker-zerotier --secret gh_token=${{ secrets.GH_TOKEN }} +container-update
+    - name: Run Task
+      run: /bin/bash -c "buildscripts/pull-request_workflow.sh"
