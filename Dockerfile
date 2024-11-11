@@ -10,7 +10,7 @@ LABEL org.opencontainers.image.description ZeroTier is a secure network overlay 
 ADD entrypoint.sh /docker/entrypoint.sh
 
 RUN apt-get update \
-    && apt -y --no-install-recommends install curl gnupg2 ca-certificates jq \
+    && apt -y --no-install-recommends install curl gnupg2 ca-certificates jq iputils-ping traceroute \
     && echo "deb [signed-by=/etc/apt/keyrings/zerotier.gpg] https://download.zerotier.com/debian/bookworm bookworm main" > /etc/apt/sources.list.d/zerotier.list \
     && mkdir -p /root/.gnupg \
     && chmod 700 /root/.gnupg \
