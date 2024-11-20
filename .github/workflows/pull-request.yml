@@ -11,9 +11,6 @@ jobs:
       FORCE_COLOR: 1
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
-    - uses: earthly/actions-setup@v1
-      with:
-        version: v0.8.0
     - name: Log in to the Container registry
       uses: docker/login-action@v3
       with:
