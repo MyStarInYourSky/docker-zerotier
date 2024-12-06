@@ -60,7 +60,7 @@ export ZEROTIER_SETTINGS='{}'
 while read line ; do
   export SETTING_NAME=$(echo -n $line | awk -F'ZEROTIER_LOCAL_SETTING_' '{print $2}'| awk -F'=' '{print $1}')
   export SETTING_VALUE=$(echo -n $line | awk -F'=' '{print $2}')
-  if [[ $SETTING_VALUE = "true" ]] || [[ $SETTING_VALUE = "false" ]] || [[ $SETTING_VALUE =~ ^[0-9]+$ ]] ; then
+  if [[ $(echo -n $SETTING_VALUE | jq -r 'type') == "number" || $(echo -n $SETTING_VALUE | jq -r 'type') == "boolean" || $(echo -n $SETTING_VALUE | jq -r 'type') == "array" ]]; then
     export ZEROTIER_SETTINGS=$(echo $ZEROTIER_SETTINGS | jq -r -c ". + {\"$SETTING_NAME\": $SETTING_VALUE}")
   else
     export ZEROTIER_SETTINGS=$(echo $ZEROTIER_SETTINGS | jq -r -c ". + {\"$SETTING_NAME\": \"$SETTING_VALUE\"}")
